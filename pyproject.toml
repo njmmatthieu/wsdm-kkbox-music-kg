@@ -12,6 +12,9 @@ ontoweaver = "^0.2.4"
 pandas = "^2.0.1"
 notebook = "^7.4.3"
 biocypher = "^0.9.6"
+ipykernel = "^6.30.1"
+py7zr = "^1.0.0"
+pykeen = "^1.11.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
