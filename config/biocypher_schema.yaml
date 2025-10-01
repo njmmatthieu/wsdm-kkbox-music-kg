@@ -1,0 +1,81 @@
+########################
+# NODES
+########################
+
+# Defined in alphabetical order
+
+artist:
+    is_a: Entity
+    represented_as: node
+    label_in_input: artist
+
+city:
+    is_a: Entity
+    represented_as: node
+    label_in_input: city
+
+genre:
+    is_a: Entity
+    represented_as: node
+    label_in_input: genre
+
+language:
+    is_a: Entity
+    represented_as: node
+    label_in_input: language
+
+member:
+    is_a: Entity
+    represented_as: node
+    label_in_input: member
+    properties:
+        age: int64
+        gender: str
+
+song:
+    is_a: Entity
+    represented_as: node
+    label_in_input: song
+
+########################
+# EDGES
+########################
+
+# Defined in alphabetical order
+
+belongs to:
+    is_a: association
+    represented_as: edge
+    label_in_input: belongs_to
+    source: song
+    target: genre
+
+listens to:
+    is_a: association
+    represented_as: edge
+    label_in_input: listens_to
+    source: member
+    target: song
+    properties:
+      target: bool
+
+lives in:
+    is_a: association
+    represented_as: edge
+    label_in_input: lives_in
+    source: member
+    target: city
+
+performed by:
+    is_a: association
+    represented_as: edge
+    label_in_input: performed_by
+    source: song
+    target: artist
+
+performed in:
+    is_a: association
+    represented_as: edge
+    label_in_input: performed_in
+    source: song
+    target: language
