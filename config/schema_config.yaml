@@ -57,7 +57,7 @@ listens to:
     source: member
     target: song
     properties:
-      target: bool
+      target: int64
 
 lives in:
     is_a: association
