@@ -1,0 +1,18 @@
+row:
+    map:
+        column: song_id
+        to_subject: song
+transformers:
+    - split:
+        column: genre_ids
+        to_object: genre
+        via_relation: belongs_to
+        separator: "|"
+    - map:
+        column: artist_name
+        to_object: artist
+        via_relation: performed_by
+    - map:
+        column: language
+        to_object: language
+        via_relation: performed_in

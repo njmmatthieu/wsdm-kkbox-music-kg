@@ -1,0 +1,17 @@
+row:
+    map:
+        column: msno
+        to_subject: member
+transformers:
+    - map:
+        column: city
+        to_object: city
+        via_relation: lives_in
+    - map:
+        column: bd
+        to_property: age
+        for_objects: member
+    - map:
+        column: gender
+        to_property: gender
+        for_objects: member

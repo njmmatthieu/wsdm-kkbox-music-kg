@@ -1,0 +1,13 @@
+row:
+    map:
+        column: msno
+        to_subject: member
+transformers:
+    - split:
+        column: song_id
+        to_object: song
+        via_relation: listens_to
+    - map:
+        column: target
+        to_property: target
+        for_object: listens_to
