@@ -15,7 +15,7 @@ else
     echo "File ${SUBSET_FILENAME} not found in ${DATA_DIR}"
     echo "Executing Python script to create it..."
     
-    # Execute the Python script
+    # Execute create_songs_subset_train.py to subset only songs that have targets in the train data.
     python3 "$PYTHON_SCRIPT" -d "$DATA_DIR" -s "$FILEPATH"
 
     # Check if the Python script executed successfully
@@ -33,3 +33,21 @@ else
         exit 1
     fi
 fi
+
+ontoweave \
+"${FILEPATH}:./wsdm-kkbox-music-kg/adapters/songs.yaml" \
+--biocypher-config ./config/biocypher_config.yaml \
+--biocypher-schema ./config/schema_config.yaml \
+-a suffix \
+-i \
+-l DEBUG
+# ./data/kkbox-music-recommendation-challenge/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml \
+# ./data/kkbox-music-recommendation-challenge/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml \
+    
+# # Execute the long command and capture its last line which is a path bash file to import data 
+# SCRIPT_COMMAND=$($ONTOWEAVE_COMMAND | tail -1)
+
+# if [[ -n "$SCRIPT_COMMAND" ]]; then
+#     echo "Executing: $SCRIPT_COMMAND"
+#     eval "sh $SCRIPT_COMMAND"
+# fi
