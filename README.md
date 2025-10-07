@@ -14,7 +14,13 @@ The columns of the tabular data are described at this link: https://www.kaggle.c
 
 We will be using only three of these datasets: train.csv, members.csv and songs.csv. 
 You need first to  unzip those three files with py7zr python package. 
-The downloaded folder called *kkbox-music-recommendation-chalenge* data should be located in a folder *data*. 
+The downloaded folder called *kkbox-music-recommendation-chalenge* data should be located in a folder called *data* at the root of this directory. 
+
+## Create the SKG on a subset of songs with taregts in *train.csv* with Ontoweaver and BioCypher
+
+```
+bash ./create_wsdm-kkbox-music-kg.sh
+```
 
 ## Run Ontoweaver and Biocypher 
 
