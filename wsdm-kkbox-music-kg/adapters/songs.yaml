@@ -8,10 +8,12 @@ transformers:
         to_object: genre
         via_relation: belongs_to
         separator: "|"
-    - map:
+    - replace:
         column: artist_name
         to_object: artist
         via_relation: performed_by
+        forbidden: "[';]"
+        substitute: "_"
     - map:
         column: language
         to_object: language
