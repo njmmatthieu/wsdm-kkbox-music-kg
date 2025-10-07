@@ -36,13 +36,13 @@ fi
 
 ontoweave \
 "${FILEPATH}:./wsdm-kkbox-music-kg/adapters/songs.yaml" \
+"${DATA_DIR}/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml" \
+"${DATA_DIR}/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml" \
 --biocypher-config ./config/biocypher_config.yaml \
 --biocypher-schema ./config/schema_config.yaml \
 -a suffix \
--i \
--l DEBUG
-# ./data/kkbox-music-recommendation-challenge/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml \
-# ./data/kkbox-music-recommendation-challenge/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml \
+-i
+# -l INFO
     
 # # Execute the long command and capture its last line which is a path bash file to import data 
 # SCRIPT_COMMAND=$($ONTOWEAVE_COMMAND | tail -1)
