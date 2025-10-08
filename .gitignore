@@ -1,7 +1,7 @@
 .DS_Store
 biocypher-*
 .vscode
-data/*
+data
 *.env
 volumes/*
 
@@ -136,3 +136,6 @@ dmypy.json
 .pyre/
 .idea
 import.report
+
+# Github Copilot
+.github
