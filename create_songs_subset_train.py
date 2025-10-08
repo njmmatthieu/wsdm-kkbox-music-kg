@@ -2,7 +2,9 @@
 import argparse
 import os.path
 import pandas as pd
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 if __name__== "__main__":
     usage = f"Create a subset of the songs.csv data table only for songs with a target in the train.csv data table."
@@ -23,12 +25,12 @@ if __name__== "__main__":
 
     if os.path.isfile(songs_filename):
         
-        print("Songs file exists.")
+        logging.info("Songs file exists.")
         songs = pd.read_csv(songs_filename)
 
         if os.path.isfile(train_filename):
             
-            print("Train file exists.")
+            logging.info("Train file exists.")
             train = pd.read_csv(train_filename)
 
             song_subset_train = songs[songs.song_id.isin(train.song_id)]
