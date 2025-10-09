@@ -1,66 +1,104 @@
 #!/bin/bash
 
+
 # Configuration variables
 DATA_DIR="data/kkbox-music-recommendation-challenge"
-SUBSET_FILENAME="songs_subset_train.csv"
-PYTHON_SCRIPT="create_songs_subset_train.py"
 
-# Full path to the song subset file
-FILEPATH="${DATA_DIR}/${SUBSET_FILENAME}"
-
-run_subset() {    # Check if the file exists
-    if [ -f "$FILEPATH" ]; then
-        echo "File ${SUBSET_FILENAME} already exists in ${DATA_DIR}"
-    else
-        echo "File ${SUBSET_FILENAME} not found in ${DATA_DIR}"
-        echo "Executing Python script to create it..."
-        
-        # Execute create_songs_subset_train.py to subset only songs that have targets in the train data.
-        python3 "$PYTHON_SCRIPT" -d "$DATA_DIR" -s "$FILEPATH"
-
-        # Check if the Python script executed successfully
-        if [ $? -eq 0 ]; then
-            echo "Python script executed successfully"
-            
-            # Verify the file was created
-            if [ -f "$FILEPATH" ]; then
-                echo "File ${SUBSET_FILENAME} has been created successfully"
-            else
-                echo "Warning: Python script completed but file was not found"
-            fi
+# Functions
+run_subset() {
+    local song_file="$1"
+    echo "Running genre artist stats on $song_file"
+    echo "Executing Python script to create subset file."
+    python3 create_songs_subset_train.py -d "$DATA_DIR" -sf "$song_file"
+    if [ $? -eq 0 ]; then
+        echo "Python script executed successfully"
+        base_filename="${song_file%.*}"
+        local subset_output_file="${base_filename}_train_subset.csv"
+        echo "Subset output file will be: $subset_output_file."
+        if [ -f "$subset_output_file" ]; then
+            echo "File $(basename "$subset_output_file") has been created successfully"
         else
-            echo "Error: Python script failed to execute"
-            exit 1
+            echo "Warning: Python script completed but file was not found"
         fi
+    else
+        echo "Error: Python script failed to execute"
+        exit 1
+    fi
+
+}
+
+run_genre_artist_stats() {
+    local song_file="$1"
+    echo "Running genre artist stats on $song_file"
+    python3 genre_artist_stats.py -d "$DATA_DIR" -sf "$song_file"
+    if [ $? -eq 0 ]; then
+        echo "Python script executed successfully"
+        base_filename="${song_file%.*}"
+        local stats_output_file="${base_filename}_genre_artist_stats.csv"
+        echo "Stats output file will be: $stats_output_file."
+        if [ -f "$stats_output_file" ]; then
+            echo "File $stats_output_file has been created successfully"
+        else
+            echo "Warning: Python script completed but file was not found"
+        fi
+    else
+        echo "Error: Python script failed to execute"
+        exit 1
     fi
 }
 
 run_ontoweave() {
+    local song_file="$1"
     ontoweave \
-    "${FILEPATH}:./wsdm-kkbox-music-kg/adapters/songs.yaml" \
-    "${DATA_DIR}/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml" \
-    "${DATA_DIR}/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml" \
+    "$song_file:./wsdm-kkbox-music-kg/adapters/songs.yaml" \
+    "$DATA_DIR/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml" \
+    "$DATA_DIR/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml" \
     --biocypher-config ./config/biocypher_config.yaml \
     --biocypher-schema ./config/schema_config.yaml \
     -a suffix \
     -i
     # -l INFO
 }
-    
+
 # Main argument handling
-case "$1" in
-    full)
-        run_subset
-        run_ontoweave
-        ;;
+MODE="$1"
+SONG_FILE="$2"
+
+case "$MODE" in
     subset)
-        run_subset
+        if [ -z "$SONG_FILE" ]; then
+            echo "Error: Please provide the input song file as the second argument."
+            exit 1
+        fi
+        run_subset "$SONG_FILE"
+        ;;
+    genre_artist_stats)
+        if [ -z "$SONG_FILE" ]; then
+            echo "Error: Please provide the input song file as the second argument."
+            exit 1
+        fi
+        run_genre_artist_stats "$SONG_FILE"
         ;;
     ontoweave)
-        run_ontoweave
+        if [ -z "$SONG_FILE" ]; then
+            echo "Error: Please provide the input song file as the second argument."
+            exit 1
+        fi
+        run_ontoweave "$SONG_FILE"
+        ;;
+    full)
+        if [ -z "$SONG_FILE" ]; then
+            echo "Error: Please provide the input song file as the second argument."
+            exit 1
+        fi
+        run_subset "$SONG_FILE"
+        base_filename="${SONG_FILE%.*}"
+        local subset_output_file="$DATA_DIR/${base_filename}_train_subset.csv"
+        run_ontoweave "$subset_output_file"
+        run_genre_artist_stats "$subset_output_file"
         ;;
     *)
-        echo "Usage: $0 {full|subset|ontoweave}"
+        echo "Usage: $0 {full|subset|ontoweave|genre_artist_stats} [song_file]"
         exit 1
         ;;
 esac
