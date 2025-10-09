@@ -1,5 +1,6 @@
 #1/usr/bin/env python3
 import argparse
+import csv
 import logging
 import os.path
 import pandas as pd
@@ -32,7 +33,9 @@ if __name__== "__main__":
     if os.path.isfile(songs_filename):
         
         logging.info("Songs file exists.")
-        songs = pd.read_csv(songs_filename)
+        songs = pd.read_csv(songs_filename, 
+                            quoting=csv.QUOTE_NONE, 
+                            on_bad_lines='skip')
 
         if os.path.isfile(train_filename):
             

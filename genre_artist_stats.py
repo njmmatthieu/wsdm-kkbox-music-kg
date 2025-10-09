@@ -1,5 +1,6 @@
 #1/usr/bin/env python3
 import argparse
+import csv
 import logging
 import os.path
 import pandas as pd
@@ -8,11 +9,16 @@ logging.basicConfig(level=logging.INFO)
 
 def genre_artist_stats(songs_df):
 
+    songs_df['genre_ids'] = songs_df['genre_ids'].astype(str)
+    songs_expanded = songs_df.assign(
+        genre_ids=songs_df['genre_ids'].str.split('|')
+    ).explode('genre_ids')
+
     # Count songs per genre for each artist
-    genre_song_counts = songs_df.groupby(['artist_name', 'genre_ids']).size().reset_index(name='genre_song_count')
+    genre_song_counts = songs_expanded.groupby(['artist_name', 'genre_ids']).size().reset_index(name='genre_song_count')
 
     # Count total songs per artist
-    artist_song_counts = songs_df.groupby('artist_name').size().reset_index(name='total_song_count')
+    artist_song_counts = songs_expanded.groupby('artist_name').size().reset_index(name='total_song_count')
 
     # Merge to associate each genre count with the artist's total
     genre_artist_stats_table = genre_song_counts.merge(artist_song_counts, on='artist_name')
@@ -48,10 +54,13 @@ if __name__== "__main__":
     if os.path.isfile(songs_filename):
         
         logging.info("File exists.")
-        songs = pd.read_csv(songs_filename)
+        songs = pd.read_csv(songs_filename, 
+                            quoting=csv.QUOTE_NONE, 
+                            on_bad_lines='skip')
+        print(songs.head(5))
 
         stats = genre_artist_stats(songs)
-        print(stats.shape)
+        print(stats.head(5))
 
         stats.to_csv(stats_filename, index=False)
 
