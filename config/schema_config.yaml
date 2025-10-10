@@ -43,12 +43,13 @@ song:
 
 # Defined in alphabetical order
 
-belongs to:
+artist belongs to genre:
     is_a: association
     represented_as: edge
-    label_in_input: belongs_to
-    source: song
+    label_in_input: artist_belongs_to_genre
+    source: artist
     target: genre
+
 
 listens to:
     is_a: association
@@ -79,3 +80,10 @@ performed in:
     label_in_input: performed_in
     source: song
     target: language
+
+song belongs to genre:
+    is_a: association
+    represented_as: edge
+    label_in_input: song_belongs_to_genre
+    source: song
+    target: genre

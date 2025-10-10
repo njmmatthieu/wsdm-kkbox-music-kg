@@ -1,8 +1,9 @@
 #1/usr/bin/env python3
 import argparse
+import csv
+import logging
 import os.path
 import pandas as pd
-import logging
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,20 +14,28 @@ if __name__== "__main__":
     )
 
     parser.add_argument("-d", "--data_directory", metavar="TXT", help="Data directory")
-
-    parser.add_argument("-s", "--subset_file_full_path", metavar="TXT", help="Subset file full path")
+    parser.add_argument("-sf", "--song_file", metavar="TXT", help="Subset file full path")
 
     args, unknown = parser.parse_known_args()
     if unknown:
         raise ValueError(f"Unknown args: {unknown}")
     
-    songs_filename = str(args.data_directory) + f"/songs.csv"
+    # Remove ".csv" from the end and add "_train_subset.csv"
+    base_filename = os.path.splitext(os.path.basename(args.song_file))[0]
+    subset_filename = os.path.join(args.data_directory, f"{base_filename}_train_subset.csv")
+
+    if "_train_subset" in base_filename or os.path.isfile(subset_filename):
+        raise ValueError(f"The subset file already exists.")
+    
+    songs_filename = str(args.song_file)
     train_filename = str(args.data_directory) + f"/train.csv"
 
     if os.path.isfile(songs_filename):
         
         logging.info("Songs file exists.")
-        songs = pd.read_csv(songs_filename)
+        songs = pd.read_csv(songs_filename, 
+                            quoting=csv.QUOTE_NONE, 
+                            on_bad_lines='skip')
 
         if os.path.isfile(train_filename):
             
@@ -34,4 +43,4 @@ if __name__== "__main__":
             train = pd.read_csv(train_filename)
 
             song_subset_train = songs[songs.song_id.isin(train.song_id)]
-            song_subset_train.to_csv(args.subset_file_full_path, index=False)
+            song_subset_train.to_csv(subset_filename, index=False)

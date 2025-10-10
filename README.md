@@ -16,20 +16,40 @@ We will be using only three of these datasets: train.csv, members.csv and songs.
 You need first to  unzip those three files with py7zr python package. 
 The downloaded folder called *kkbox-music-recommendation-chalenge* data should be located in a folder called *data* at the root of this directory. 
 
-## Create the SKG on a subset of songs with targets in *train.csv* with Ontoweaver and BioCypher
-
-```
 bash ./create_wsdm-kkbox-music-kg.sh
+
+## Run the SKG creation pipeline with different options
+
+The script `create_wsdm-kkbox-music-kg.sh` supports four main modes:
+
+### 1. full
+Runs the full pipeline: creates a subset of songs with targets, then runs Ontoweave and genre-artist statistics on the subset.
+
+**Example:**
+```
+bash ./create_wsdm-kkbox-music-kg.sh full data/kkbox-music-recommendation-challenge/songs.csv
 ```
 
-## Run Ontoweaver and Biocypher 
+### 2. subset
+Creates a subset of songs with targets in train.csv from the input song file.
 
+**Example:**
 ```
-ontoweave \
-    ./data/kkbox-music-recommendation-challenge/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml \
-    ./data/kkbox-music-recommendation-challenge/songs.csv:./wsdm-kkbox-music-kg/adapters/songs.yaml \
-    ./data/kkbox-music-recommendation-challenge/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml \
-    --biocypher-config ./config/biocypher_config.yaml \
-    --biocypher-schema ./config/schema_config.yaml \
-    -a suffix
+bash ./create_wsdm-kkbox-music-kg.sh subset data/kkbox-music-recommendation-challenge/songs.csv
+```
+
+### 3. ontoweave
+Runs Ontoweave on the provided song file (can be a subset or full songs file).
+
+**Example:**
+```
+bash ./create_wsdm-kkbox-music-kg.sh ontoweave data/kkbox-music-recommendation-challenge/songs_subset_train.csv
+```
+
+### 4. genre_artists_stats
+Runs genre-artist statistics on the provided song file.
+
+**Example:**
+```
+bash ./create_wsdm-kkbox-music-kg.sh genre_artists_stats data/kkbox-music-recommendation-challenge/songs_subset_train.csv
 ```
