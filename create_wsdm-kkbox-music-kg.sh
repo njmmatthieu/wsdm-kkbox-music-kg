@@ -49,15 +49,11 @@ run_genre_artist_stats() {
 
 run_ontoweave() {
     local song_file="$1"
-    ontoweave \
-    "$song_file:./wsdm-kkbox-music-kg/adapters/songs.yaml" \
-    "$DATA_DIR/train.csv:./wsdm-kkbox-music-kg/adapters/train.yaml" \
-    "$DATA_DIR/members.csv:./wsdm-kkbox-music-kg/adapters/members.yaml" \
-    --biocypher-config ./config/biocypher_config.yaml \
-    --biocypher-schema ./config/schema_config.yaml \
-    -a suffix \
+    python3 weave.py \
+    -sf "$song_file" \
+    -t "$DATA_DIR/train.csv" \
+    -m "$DATA_DIR/members.csv" \
     -i
-    # -l INFO
 }
 
 # Main argument handling
@@ -84,7 +80,11 @@ case "$MODE" in
             echo "Error: Please provide the input song file as the second argument."
             exit 1
         fi
-        run_ontoweave "$SONG_FILE"
+        python3 weave.py \
+        -sf "$SONG_FILE" \
+        -m "$DATA_DIR/members.csv" \
+        -t "$DATA_DIR/train.csv" \
+        -i
         ;;
     full)
         if [ -z "$SONG_FILE" ]; then
@@ -92,10 +92,14 @@ case "$MODE" in
             exit 1
         fi
         run_subset "$SONG_FILE"
+        run_genre_artist_stats "$SONG_FILE"
         base_filename="${SONG_FILE%.*}"
         local subset_output_file="$DATA_DIR/${base_filename}_train_subset.csv"
-        run_ontoweave "$subset_output_file"
-        run_genre_artist_stats "$subset_output_file"
+        python3 weave.py \
+        -sf "$SONG_FILE" \
+        -t "$DATA_DIR/train.csv" \
+        -m "$DATA_DIR/members.csv" \
+        -i
         ;;
     *)
         echo "Usage: $0 {full|subset|ontoweave|genre_artist_stats} [song_file]"
