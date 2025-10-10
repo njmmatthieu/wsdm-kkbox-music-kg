@@ -16,8 +16,6 @@ We will be using only three of these datasets: train.csv, members.csv and songs.
 You need first to  unzip those three files with py7zr python package. 
 The downloaded folder called *kkbox-music-recommendation-chalenge* data should be located in a folder called *data* at the root of this directory. 
 
-bash ./create_wsdm-kkbox-music-kg.sh
-
 ## Run the SKG creation pipeline with different options
 
 The script `create_wsdm-kkbox-music-kg.sh` supports four main modes:
