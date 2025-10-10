@@ -5,7 +5,7 @@ import logging
 import os.path
 import pandas as pd
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 def genre_artist_stats(songs_df):
 
@@ -57,10 +57,8 @@ if __name__== "__main__":
         songs = pd.read_csv(songs_filename, 
                             quoting=csv.QUOTE_NONE, 
                             on_bad_lines='skip')
-        print(songs.head(5))
 
         stats = genre_artist_stats(songs)
-        print(stats.head(5))
 
         stats.to_csv(stats_filename, index=False)
 

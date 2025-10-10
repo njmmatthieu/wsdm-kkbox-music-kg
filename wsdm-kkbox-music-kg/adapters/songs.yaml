@@ -6,7 +6,7 @@ transformers:
     - split:
         column: genre_ids
         to_object: genre
-        via_relation: belongs_to
+        via_relation: song_belongs_to_genre
         separator: "|"
     - replace:
         column: artist_name

@@ -47,15 +47,6 @@ run_genre_artist_stats() {
     fi
 }
 
-run_ontoweave() {
-    local song_file="$1"
-    python3 weave.py \
-    -sf "$song_file" \
-    -t "$DATA_DIR/train.csv" \
-    -m "$DATA_DIR/members.csv" \
-    -i
-}
-
 # Main argument handling
 MODE="$1"
 SONG_FILE="$2"
@@ -80,10 +71,12 @@ case "$MODE" in
             echo "Error: Please provide the input song file as the second argument."
             exit 1
         fi
+        base_filename="${SONG_FILE%.*}"
         python3 weave.py \
-        -sf "$SONG_FILE" \
+        -s "$SONG_FILE" \
         -m "$DATA_DIR/members.csv" \
         -t "$DATA_DIR/train.csv" \
+        -gas "${base_filename}_genre_artist_stats.csv" \
         -i
         ;;
     full)
@@ -92,13 +85,13 @@ case "$MODE" in
             exit 1
         fi
         run_subset "$SONG_FILE"
-        run_genre_artist_stats "$SONG_FILE"
         base_filename="${SONG_FILE%.*}"
-        local subset_output_file="$DATA_DIR/${base_filename}_train_subset.csv"
+        run_genre_artist_stats "${base_filename}_train_subset.csv"
         python3 weave.py \
-        -sf "$SONG_FILE" \
+        -s "${base_filename}.csv" \
         -t "$DATA_DIR/train.csv" \
         -m "$DATA_DIR/members.csv" \
+        -gas "${base_filename}_genre_artist_stats.csv" \
         -i
         ;;
     *)

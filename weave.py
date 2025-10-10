@@ -35,8 +35,8 @@ if __name__ == "__main__":
     # parser.add_argument("-snv", "--single_nucleotide_variants", metavar="CSV",nargs="+",
     #                     help="Extract from a CSV file with single nucleotide variants (SNV) annotations.")
     
-    parser.add_argument("-sf",
-                        "--song",
+    parser.add_argument("-s",
+                        "--songs",
                         metavar="TSV",
                         nargs="+")
     
@@ -70,11 +70,12 @@ if __name__ == "__main__":
     nodes = []
     edges = []
 
+    print(str(asked.songs[0]))
 
-    if asked.song:
+    if asked.songs:
 
         # Song files require preprocessing. 
-        songs_filename = str(asked.song[0])
+        songs_filename = str(asked.songs[0])
         print(songs_filename)
         if os.path.isfile(songs_filename):
             logging.info("Songs file exists.")
@@ -113,6 +114,11 @@ if __name__ == "__main__":
         logging.info(f"Weave members data...")
         for file_path in asked.members:
             data_mappings[file_path] =  "./wsdm-kkbox-music-kg/adapters/members.yaml"
+
+    if asked.genre_artist_stats:
+        logging.info(f"Weave genre artist stats...")
+        for file_path in asked.genre_artist_stats:
+            data_mappings[file_path] =  "./wsdm-kkbox-music-kg/adapters/genre_artist_stats.yaml"
     
     # Write everything.
     n, e = ontoweaver.extract(data_mappings, 
