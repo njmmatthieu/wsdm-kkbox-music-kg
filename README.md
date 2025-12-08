@@ -41,7 +41,7 @@ Runs Ontoweave on the provided song file (can be a subset or full songs file).
 
 **Example:**
 ```
-bash ./create_wsdm-kkbox-music-kg.sh ontoweave data/kkbox-music-recommendation-challenge/songs_subset_train.csv
+bash ./create_wsdm-kkbox-music-kg.sh ontoweave data/kkbox-music-recommendation-challenge/songs_train_subset.csv
 ```
 
 ### 4. genre_artists_stats
@@ -49,5 +49,5 @@ Runs genre-artist statistics on the provided song file.
 
 **Example:**
 ```
-bash ./create_wsdm-kkbox-music-kg.sh genre_artists_stats data/kkbox-music-recommendation-challenge/songs_subset_train.csv
+bash ./create_wsdm-kkbox-music-kg.sh genre_artists_stats data/kkbox-music-recommendation-challenge/songs_train_subset.csv
 ```
