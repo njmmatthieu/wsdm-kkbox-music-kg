@@ -1,0 +1,15 @@
+row:
+    replace:
+        column: artist_name
+        to_subject: artist
+        forbidden: "[';]"
+        substitute: "_"
+transformers:
+    - map:
+        column: genre_ids
+        to_object: genre
+        via_relation: artist_belongs_to_genre
+    - map:
+        column: genre_percentage
+        to_property: percentage
+        for_objects: artist_belongs_to_genre
