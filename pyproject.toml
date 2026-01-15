@@ -1,27 +1,26 @@
-[tool.poetry]
+[project]
 name = "wsdm-kkbox-music-kg"
 version = "0.0.1"
 description = "Knoweldge Graph for WSDM - KKBox's Music Recommendation Challenge Knowledge"
-authors = ["Emanuele Quaglio <emanuele.quaglio@pasteur.fr>", "Matthieu Najm <matthieu.najm@pasteur.fr>", ]
+authors = [
+    {name = "Emanuele Quaglio", email = "emanuele.quaglio@pasteur.fr"},
+    {name = "Matthieu Najm", email = "matthieu.najm@pasteur.fr"},
+]
 readme = "README.md"
-package-mode = false
+requires-python = ">=3.12"
+dependencies = [
+    "ontoweaver@git+https://github.com/oncodash/ontoweaver.git",
+    "pandas>=2.0.1",
+    "notebook>=7.4.3",
+    "biocypher>=0.10.1",
+    "ipykernel>=6.30.1",
+    "py7zr>=1.0.0",
+    "pykeen>=1.11.1",
+    "seaborn>=0.13.2",
+    "regex>=2025.9.18",
+    "lxml>=6.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-pandas = "^2.0.1"
-notebook = "^7.4.3"
-biocypher = "^0.12.0"
-ontoweaver = "^1.0.0"
-ipykernel = "^6.30.1"
-py7zr = "^1.0.0"
-pykeen = "^1.11.1"
-seaborn = "^0.13.2"
-regex = "^2025.9.18"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.4"
-sphinx_rtd_theme = "^3.0.2"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+# [tool.poetry.group.dev.dependencies]
+# pytest = "^8.3.4"
+# sphinx_rtd_theme = "^3.0.2"
