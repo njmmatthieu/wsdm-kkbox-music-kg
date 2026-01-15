@@ -60,12 +60,26 @@ if __name__ == "__main__":
                         "--import-script-run", 
                         action="store_true",
                         help=f"If passed, it will call the import scripts created by Biocypher for you.")
+    
+    levels = {
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL
+    }
+
+    parser.add_argument("-v", "--verbose", choices = levels.keys(), default = "WARNING",
+                        help="Set the verbose level (default: %(default)s).")
+    
 
     asked = parser.parse_args()
     bc = BioCypher(
         biocypher_config_path="config/biocypher_config.yaml",
         schema_config_path="config/schema_config.yaml"
     )
+
+    ontoweaver.logger.setLevel(asked.verbose)
 
     nodes = []
     edges = []
@@ -90,15 +104,16 @@ if __name__ == "__main__":
         with open(mapping_file) as fd:
             mapping = yaml.full_load(fd)
 
-        adapter = ontoweaver.tabular.extract_table(
+        n, e = ontoweaver.extract_table(
             df=songs,
             config=mapping,
-            separator=":",
-            affix="suffix",
         )
 
-        nodes += adapter.nodes
-        edges += adapter.edges
+        nodes += n
+        edges += e
+
+        # nodes += adapter.nodes
+        # edges += adapter.edges
 
         logging.info(f"Wove songs: {len(nodes)} nodes, {len(edges)} edges.")
     
@@ -119,19 +134,24 @@ if __name__ == "__main__":
         logging.info(f"Weave genre artist stats...")
         for file_path in asked.genre_artist_stats:
             data_mappings[file_path] =  "./wsdm-kkbox-music-kg/adapters/genre_artist_stats.yaml"
-    
-    # Write everything.
-    n, e = ontoweaver.extract(data_mappings, 
-                              sep=",", 
+
+    n, e = ontoweaver.extract(data_to_mapping=data_mappings,  
                               affix="suffix")
+    
     nodes += n
     edges += e
+    
+    # The fusion module is independant from OntoWeaver,
+    # and thus operates on BioCypher's tuples.
+    bc_nodes = ontoweaver.ow2bc(nodes)
+    bc_edges = ontoweaver.ow2bc(edges)
 
-    import_file = ontoweaver.reconciliate_write(nodes, 
-                                                edges, 
-                                                "config/biocypher_config.yaml", 
-                                                "config/schema_config.yaml", 
-                                                separator=", ")
+    import_file = ontoweaver.reconciliate_write(bc_nodes, 
+                                                bc_edges, 
+                                                biocypher_config_path="config/biocypher_config.yaml", 
+                                                schema_path="config/schema_config.yaml",
+                                                separator=",",
+                                                )
     
     print(import_file)
     # ontoweaver.check_file(import_file)
