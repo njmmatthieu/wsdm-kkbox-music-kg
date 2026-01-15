@@ -74,10 +74,11 @@ case "$MODE" in
         base_filename="${SONG_FILE%.*}"
         python3 weave.py \
         -s "$SONG_FILE" \
-        -m "$DATA_DIR/members.csv" \
-        -t "$DATA_DIR/train.csv" \
-        -gas "${base_filename}_genre_artist_stats.csv" \
-        -i
+        # -v DEBUG \
+        # -m "$DATA_DIR/members.csv" \
+        # -t "$DATA_DIR/train.csv" \
+        # -gas "${base_filename}_genre_artist_stats.csv" \
+        # -i
         ;;
     full)
         if [ -z "$SONG_FILE" ]; then
@@ -89,10 +90,10 @@ case "$MODE" in
         run_genre_artist_stats "${base_filename}_train_subset.csv"
         python3 weave.py \
         -s "${base_filename}.csv" \
-        -t "$DATA_DIR/train.csv" \
-        -m "$DATA_DIR/members.csv" \
-        -gas "${base_filename}_genre_artist_stats.csv" \
-        -i
+        # -t "$DATA_DIR/train.csv" \
+        # -m "$DATA_DIR/members.csv" \
+        # -gas "${base_filename}_genre_artist_stats.csv" \
+        # -i
         ;;
     *)
         echo "Usage: $0 {full|subset|ontoweave|genre_artist_stats} [song_file]"
