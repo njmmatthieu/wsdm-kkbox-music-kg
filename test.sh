@@ -26,5 +26,6 @@ else
 fi
 
 echo "Found labels:" 1>&2
-cat $(dirname $if)/*-part*.csv 2>/dev/null | head | cut -d";" -f4 | sort | uniq
+cat $(dirname $if)/*-part*.csv 2>/dev/null | cut -d";" -f4 | sort | uniq
+
 
