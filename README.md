@@ -2,19 +2,18 @@
 
 ## Overview
 
-This repository the scripts to run OntoWeaver and BioCypher for the creation of knowledge graphs from the data provided for the WSDM - KKBox Music Recommendation challenge. 
+This repository the scripts to run OntoWeaver and BioCypher for the creation of knowledge graphs from the data provided for the WSDM - KKBox Music Recommendation challenge.
 
 ## Data
 
 	1. Download the data at this link: https://www.kaggle.com/competitions/kkbox-music-recommendation-challenge/data
-	2. Unzip them with py7zr package
-	3. Structure of the data in the folder: data > kkbox-music-recommendation-challenge/
+	2. run `install_data.sh`
+	3. data will be available in: `data/kkbox-music-recommendation-challenge/`
 
 The columns of the tabular data are described at this link: https://www.kaggle.com/competitions/kkbox-music-recommendation-challenge/data
 
-We will be using only three of these datasets: train.csv, members.csv and songs.csv. 
-You need first to  unzip those three files with py7zr python package. 
-The downloaded folder called *kkbox-music-recommendation-chalenge* data should be located in a folder called *data* at the root of this directory. 
+We will be using only three of these datasets: train.csv, members.csv and songs.csv.
+
 
 ## Run the SKG creation pipeline with different options
 

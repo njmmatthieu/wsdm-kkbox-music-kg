@@ -34,33 +34,32 @@ if __name__ == "__main__":
 
     # parser.add_argument("-snv", "--single_nucleotide_variants", metavar="CSV",nargs="+",
     #                     help="Extract from a CSV file with single nucleotide variants (SNV) annotations.")
-    
+
     parser.add_argument("-s",
                         "--songs",
                         metavar="TSV",
                         nargs="+")
-    
+
     parser.add_argument("-t",
                         "--train",
                         metavar="TSV",
                         nargs="+")
-    
+
     parser.add_argument("-m",
                         "--members",
                         metavar="TSV",
                         nargs="+")
-    
+
     parser.add_argument("-gas",
                         "--genre_artist_stats",
                         metavar="TSV",
                         nargs="+")
 
-
-    parser.add_argument("-i", 
-                        "--import-script-run", 
+    parser.add_argument("-i",
+                        "--import-script-run",
                         action="store_true",
                         help=f"If passed, it will call the import scripts created by Biocypher for you.")
-    
+
     levels = {
         "DEBUG": logging.DEBUG,
         "INFO": logging.INFO,
@@ -71,7 +70,6 @@ if __name__ == "__main__":
 
     parser.add_argument("-v", "--verbose", choices = levels.keys(), default = "WARNING",
                         help="Set the verbose level (default: %(default)s).")
-    
 
     asked = parser.parse_args()
     bc = BioCypher(
@@ -88,7 +86,7 @@ if __name__ == "__main__":
 
     if asked.songs:
 
-        # Song files require preprocessing. 
+        # Song files require preprocessing.
         songs_filename = str(asked.songs[0])
         print(songs_filename)
         if os.path.isfile(songs_filename):
@@ -96,8 +94,8 @@ if __name__ == "__main__":
 
         logging.info(f"Weave songs data...")
 
-        songs = pd.read_csv(songs_filename, 
-                            quoting=csv.QUOTE_NONE, 
+        songs = pd.read_csv(songs_filename,
+                            quoting=csv.QUOTE_NONE,
                             on_bad_lines='skip')
 
         mapping_file = "./wsdm-kkbox-music-kg/adapters/songs.yaml"
@@ -116,7 +114,7 @@ if __name__ == "__main__":
         # edges += adapter.edges
 
         logging.info(f"Wove songs: {len(nodes)} nodes, {len(edges)} edges.")
-    
+
     # Extract from databases not requiring preprocessing.
     data_mappings = {}
 
@@ -124,7 +122,7 @@ if __name__ == "__main__":
         logging.info(f"Weave training data...")
         for file_path in asked.train:
             data_mappings[file_path] =  "./wsdm-kkbox-music-kg/adapters/train.yaml"
-    
+
     if asked.members:
         logging.info(f"Weave members data...")
         for file_path in asked.members:
@@ -135,24 +133,27 @@ if __name__ == "__main__":
         for file_path in asked.genre_artist_stats:
             data_mappings[file_path] =  "./wsdm-kkbox-music-kg/adapters/genre_artist_stats.yaml"
 
-    n, e = ontoweaver.extract(data_to_mapping=data_mappings,  
-                              affix="suffix")
-    
+    n, e = ontoweaver.extract(
+        data_to_mapping=data_mappings,
+        affix="suffix"
+    )
+
     nodes += n
     edges += e
-    
+
     # The fusion module is independant from OntoWeaver,
     # and thus operates on BioCypher's tuples.
     bc_nodes = ontoweaver.ow2bc(nodes)
     bc_edges = ontoweaver.ow2bc(edges)
 
-    import_file = ontoweaver.reconciliate_write(bc_nodes, 
-                                                bc_edges, 
-                                                biocypher_config_path="config/biocypher_config.yaml", 
-                                                schema_path="config/schema_config.yaml",
-                                                separator=",",
-                                                )
-    
+    import_file = ontoweaver.reconciliate_write(
+        bc_nodes,
+        bc_edges,
+        biocypher_config_path="config/biocypher_config.yaml",
+        schema_path="config/schema_config.yaml",
+        reconciliate_sep=",",
+    )
+
     print(import_file)
     # ontoweaver.check_file(import_file)
 
